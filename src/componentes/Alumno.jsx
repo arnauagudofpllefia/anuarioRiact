@@ -2,7 +2,7 @@ import '../App.css'
 export default function Alumno({ nombre, apellidos, promo, curso, children }) {
 
     function enviarForm(e) {
-        console.log("Formulario enviado")
+        
     }
 
 

@@ -1,36 +1,38 @@
 import { useState } from "react";
 
-export default function Login({ onLogin }) {
-  const [user, setUser] = useState("");
-  const [pass, setPass] = useState("");
+export const Login = ({ onLogin }) => {
+  const [usuario, setUsuario] = useState("")
+  const [contra, setContra] = useState("")
 
   const verificar = (e) => {
     e.preventDefault();
-    if (user === "admin" && pass === "admin123") {
-      onLogin(true);
+    if (usuario === "admin" && contra === "admin123") {
+      onLogin(true)
     } else {
-      alert("Usuario o contraseña incorrectos");
+      alert("Nombre o contraseña incorrectos")
     }
-  };
+  }
 
   return (
-    <form onSubmit={verificar} className="border p-4 rounded space-y-2">
+    <form onSubmit={verificar} className="space-y-2">
       <input
         className="border p-2 w-full"
         placeholder="Usuario"
-        value={user}
-        onChange={(e) => setUser(e.target.value)}
+        value={usuario}
+        onChange={e => setUsuario(e.target.value)}
       />
       <input
-        className="border p-2 w-full"
         type="password"
+        className="border p-2 w-full"
         placeholder="Contraseña"
-        value={pass}
-        onChange={(e) => setPass(e.target.value)}
+        value={contra}
+        onChange={e => setContra(e.target.value)}
       />
-      <button className="bg-blue-600 text-white px-4 py-2 rounded w-full">
+      <button className="bg-blue-600 text-white px-4 py-2 rounded">
         Login
       </button>
     </form>
-  );
+  )
 }
+
+

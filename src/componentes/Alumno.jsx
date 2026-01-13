@@ -1,9 +1,5 @@
 import '../App.css'
-export default function Alumno({ nombre, apellidos, promo, curso, children }) {
-
-    function enviarForm(e) {
-        
-    }
+export default function Alumno({ nombre, apellidos, promo, curso, children, onEdit, onDelete }) {
 
 
     return (
@@ -15,8 +11,8 @@ export default function Alumno({ nombre, apellidos, promo, curso, children }) {
             <p className=' text-white'>{promo}</p>
             <p className=' text-white'>{curso}</p>
 
-            <button onClick={enviarForm()} className=' text-green-300 ml-[10px] cursor-pointer'>Edit</button>
-            <button className='text-red-400 ml-[200px] cursor-pointer'>Delete</button>
+            <button onClick={onEdit} className=' text-green-300 ml-[10px] cursor-pointer'>Edit</button>
+            <button onClick={onDelete} className='text-red-400 ml-[200px] cursor-pointer'>Delete</button>
 
         </div>
 

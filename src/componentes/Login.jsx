@@ -5,9 +5,9 @@ export const Login = ({ onLogin }) => {
   const [contra, setContra] = useState("")
 
   const verificar = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (usuario === "admin" && contra === "admin123") {
-      onLogin(true)
+      onLogin({ name: usuario })
     } else {
       alert("Nombre o contraseña incorrectos")
     }

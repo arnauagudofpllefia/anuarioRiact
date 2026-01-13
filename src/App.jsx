@@ -4,6 +4,8 @@ import SelectorPromocion from './componentes/SelectorPromocion'
 import FiltroNombre from './componentes/FiltroNombre'
 import ListaAlumnos from './componentes/ListaAlumnos'
 import FormularioAlumno from './componentes/FormularioAlumno'
+import { Login } from './componentes/Login'
+import { InfoAdmin } from './componentes/InfoAdmin'
 
 
 export default function App() {
@@ -98,12 +100,19 @@ export default function App() {
   const [promocion, setPromocion] = useState(datosPromo[0])
   const [ciclo, setCiclo] = useState()
   const [nombre, setNombre] = useState("")
+  const [user, setUser] = useState(null)
 
-  const alumnosFiltradosPromo = alumnos.filter((al) =>{
-    let okP = al.promo === promocion || promocion == ""
-    let okN = al.nombre === nombre || nombre == ""
-    return (okP && okN)
-  } )
+ const alumnosFiltrados = alumnos.filter((al) => {
+  const okP = promocion === "" || al.promo === promocion
+
+  const textoBusqueda = nombre.toLowerCase()
+  const nombreCompleto = `${al.nombre} ${al.apellidos}`.toLowerCase()
+
+  const okN = nombreCompleto.includes(textoBusqueda)
+
+  return okP && okN
+})
+
 
   function controlPromocion(e) {
     console.log(e.target.value)
@@ -115,21 +124,29 @@ export default function App() {
   }
 
   const ciclosFiltrados = alumnos.filter((c) => c.curso)
-  console.log(ciclosFiltrados)
-  
+
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-80">
+          <h1 className="text-2xl mb-4">Iniciar sesión</h1>
+          <Login onLogin={setUser} />
+        </div>
+      </div>
+    )
+  }
 
   return (
-    
     <div className=' justify-items-center mt-[200px]'>
-      
+      <InfoAdmin user={user} onLogout={() => setUser(null)} />
+
       <h1>Promoción: {promocion}</h1>
       <SelectorPromocion controlPromocion={controlPromocion} datosPromo={datosPromo}></SelectorPromocion>
       <h1>Buscando por nombre: {nombre}</h1>
       <FiltroNombre controlNombre={controlNombre}></FiltroNombre>
 
-      <ListaAlumnos alumnos={alumnosFiltradosPromo}></ListaAlumnos>
+      <ListaAlumnos alumnos={alumnosFiltrados}></ListaAlumnos>
 
     </div>
-
   )
 }

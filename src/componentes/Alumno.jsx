@@ -1,20 +1,22 @@
 import '../App.css'
-export default function Alumno({ nombre, apellidos, promo, curso, children, onEdit, onDelete }) {
+export default function Alumno({ nombre, apellidos, promo, curso, children, onEdit, onDelete, esAdmin }) {
+  return (
+    <div className='max-w-xs w-full bg-[#0b1220] rounded-lg p-4 shadow hover:shadow-lg transform hover:scale-105 transition-all text-center'>
+      {children}
 
+      <div className='mt-3'>
+        <p className='text-white font-semibold text-lg'>{nombre} {apellidos}</p>
+        <p className='text-gray-300'>{promo}</p>
+        <p className='text-gray-300'>{curso}</p>
+      </div>
 
-    return (
-
-        <div className='border-[5px] border-blue-400 w-[300px] justify-items-center rounded-md'>
-            {children}
-
-            <p className=' text-white'>{nombre} {apellidos}</p>
-            <p className=' text-white'>{promo}</p>
-            <p className=' text-white'>{curso}</p>
-
-            <button onClick={onEdit} className=' text-green-300 ml-[10px] cursor-pointer'>Edit</button>
-            <button onClick={onDelete} className='text-red-400 ml-[200px] cursor-pointer'>Delete</button>
-
+      {esAdmin && (
+        <div className='mt-4 flex justify-center gap-4'>
+          <button onClick={onEdit} className='text-green-300 hover:underline'>Editar</button>
+          <button onClick={onDelete} className='text-red-400 hover:underline'>Eliminar</button>
         </div>
+      )}
 
-    )
-}
+    </div>
+  )
+}  

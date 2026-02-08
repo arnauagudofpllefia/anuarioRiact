@@ -23,14 +23,18 @@ export default function FormularioAlumno({ alumno = null, onSubmit, onCancel }) 
     }
   }, [alumno])
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault()
     if (!nombre.trim() || !apellidos.trim() || !promo || !curso || !url.trim()) {
       alert('Rellena todos los campos')
       return
     }
     const data = { nombre: nombre.trim(), apellidos: apellidos.trim(), promo, curso, url: url.trim() }
-    onSubmit(data)
+    try {
+      await onSubmit(data)
+    } catch (err) {
+      alert('Error: ' + (err.message || 'No se pudo guardar'))
+    }
   }
 
   return (
@@ -59,8 +63,9 @@ export default function FormularioAlumno({ alumno = null, onSubmit, onCancel }) 
         <label className="block text-black">Ciclo</label>
         <select className="border p-2 w-full bg-white text-black rounded" value={curso} onChange={e => setCurso(e.target.value)}>
           <option>DAW</option>
-          <option>DAM</option>
-          <option>ASIR</option>
+          <option>SMX</option>
+          <option>ARI</option>
+          <option>IEA</option>
         </select>
       </div>
 

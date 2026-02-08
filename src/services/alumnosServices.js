@@ -1,34 +1,73 @@
+const urlApi = 'http://localhost:3000/api'
+
+function formato(alumno) {
+  return {
+    nombre: alumno.nombre,
+    apellidos: alumno.apellidos,
+    promocion: alumno.promo,
+    ciclo: alumno.curso,
+    urlImagen: alumno.url
+  }
+}
+
+function fotmatoApi(apiAlumno) {
+  return {
+    id: apiAlumno._id,
+    nombre: apiAlumno.nombre,
+    apellidos: apiAlumno.apellidos,
+    promo: apiAlumno.promocion,
+    curso: apiAlumno.ciclo,
+    url: apiAlumno.urlImagen
+  }
+}
+
 export const alumnosService = {
-  getAll: () => {
-    const raw = localStorage.getItem('alumnos')
-    return raw ? JSON.parse(raw) : []
+  getAll: async () => {
+    try {
+      const res = await fetch(`${urlApi}/alumnos`)
+      const data = await res.json()
+      return (data || []).map(fotmatoApi)
+    } catch (err) {
+      console.error('getAll error', err)
+    }
   },
 
-  saveAll: (alumnos) => {
-    localStorage.setItem('alumnos', JSON.stringify(alumnos))
+  create: async (alumno) => {
+    try {
+      const res = await fetch(`${urlApi}/alumnos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formato(alumno))
+      })
+      const created = await res.json()
+      return fotmatoApi(created)
+    } catch (err) {
+      console.error('create error', err)
+    }
   },
 
-  create: (alumno) => {
-    const lista = alumnosService.getAll()
-    const nuevo = { id: Date.now(), ...alumno }
-    lista.push(nuevo)
-    alumnosService.saveAll(lista)
-    return nuevo
+  update: async (id, datos) => {
+    try {
+      const res = await fetch(`${urlApi}/alumnos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formato(datos))
+      })
+      const updated = await res.json()
+      return fotmatoApi(updated)
+    } catch (err) {
+      console.error('update error', err)
+
+    }
   },
 
-  update: (id, datos) => {
-    const lista = alumnosService.getAll()
-    const idx = lista.findIndex(a => a.id === id)
-    if (idx === -1) return null
-    lista[idx] = { ...lista[idx], ...datos }
-    alumnosService.saveAll(lista)
-    return lista[idx]
-  },
+  delete: async (id) => {
+    try {
+      const res = await fetch(`${urlApi}/alumnos/${id}`, { method: 'DELETE' })
+      return true
+    } catch (err) {
+      console.error('delete error', err)
 
-  delete: (id) => {
-    const lista = alumnosService.getAll()
-    const nueva = lista.filter(a => a.id !== id)
-    alumnosService.saveAll(nueva)
-    return lista.length !== nueva.length
+    }
   }
 }

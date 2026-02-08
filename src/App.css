@@ -2,12 +2,12 @@
 
 body {
   background: linear-gradient(180deg, #07132a 0%, #0b1220 100%);
-  color: #e5e7eb; /* gray-200 */
+  color: #e5e7eb;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* pequeñas utilidades */
+
 .container { max-width: 1200px; }
 
 

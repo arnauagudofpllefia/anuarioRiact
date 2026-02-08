@@ -18,24 +18,34 @@ export default function App() {
   const [editingAlumno, setEditingAlumno] = useState(null)
 
   useEffect(() => {
-    // cargar autenticación
+    
     const rawUser = localStorage.getItem('user')
     if (rawUser) setUser(JSON.parse(rawUser))
 
-    // cargar alumnos
-    const saved = alumnosService.getAll()
-    if (saved && saved.length) {
-      setAlumnos(saved)
-    } else {
-      // inicializar desde JSON
-      const withIds = initialData.map(a => ({ id: Date.now() + Math.random(), ...a }))
-      alumnosService.saveAll(withIds)
-      setAlumnos(withIds)
+    
+    async function load() {
+      try {
+        const saved = await alumnosService.getAll()
+        if (saved && saved.length) {
+          setAlumnos(saved)
+        } else {
+          
+          const created = []
+          for (const a of initialData) {
+            const c = await alumnosService.create(a)
+            created.push(c)
+          }
+          setAlumnos(created)
+        }
+      } catch (err) {
+        console.error('Error cargando alumnos', err)
+      }
     }
+    load()
   }, [])
 
   useEffect(() => {
-    // persistir usuarios
+    
     if (user) localStorage.setItem('user', JSON.stringify(user))
     else localStorage.removeItem('user')
   }, [user])
@@ -64,25 +74,43 @@ export default function App() {
     setUser(null)
   }
 
-  function crearAlumno(datos) {
-    const nuevo = alumnosService.create(datos)
-    setAlumnos(alumnosService.getAll())
-    setFormOpen(false)
-    return nuevo
+  async function crearAlumno(datos) {
+    try {
+      await alumnosService.create(datos)
+      const all = await alumnosService.getAll()
+      setAlumnos(all)
+      setFormOpen(false)
+    } catch (err) {
+      console.error('Error creando alumno', err)
+      throw err
+    }
   }
 
-  function editarAlumno(id, datos) {
-    const actualizado = alumnosService.update(id, datos)
-    setAlumnos(alumnosService.getAll())
-    setFormOpen(false)
-    setEditingAlumno(null)
-    return actualizado
+  async function editarAlumno(id, datos) {
+    try {
+      await alumnosService.update(id, datos)
+      const all = await alumnosService.getAll()
+      setAlumnos(all)
+      setFormOpen(false)
+      setEditingAlumno(null)
+    } catch (err) {
+      console.error('Error actualizando alumno', err)
+      throw err
+    }
   }
 
   function eliminarAlumno(id) {
     if (!confirm('¿Eliminar alumno?')) return
-    alumnosService.delete(id)
-    setAlumnos(alumnosService.getAll())
+    ;(async () => {
+      try {
+        await alumnosService.delete(id)
+        const all = await alumnosService.getAll()
+        setAlumnos(all)
+      } catch (err) {
+        console.error('Error eliminando alumno', err)
+        alert('Error al eliminar: ' + err.message)
+      }
+    })()
   }
 
   function openCrear() {
@@ -114,7 +142,6 @@ export default function App() {
         <div className="container mx-auto max-w-6xl p-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Anuario Alumnos</h1>
-            <p className="text-sm opacity-90">Gestiona alumnos por promoción y ciclo</p>
           </div>
           <div className="flex items-center gap-4">
             <InfoAdmin user={user} onLogout={handleLogout} />
